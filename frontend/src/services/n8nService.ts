@@ -18,8 +18,12 @@ export class N8nService {
   private webhookUrl: string;
 
   private constructor() {
-    this.webhookUrl =
-      localStorage.getItem('nexora_webhook_url') || DEFAULT_WEBHOOK_URL;
+    let saved = localStorage.getItem('nexa_webhook_url') || localStorage.getItem('nexora_webhook_url') || DEFAULT_WEBHOOK_URL;
+    if (saved.includes('/webhook-test/')) {
+      saved = saved.replace('/webhook-test/', '/webhook/');
+      localStorage.setItem('nexa_webhook_url', saved);
+    }
+    this.webhookUrl = saved;
   }
 
   public static getInstance(): N8nService {

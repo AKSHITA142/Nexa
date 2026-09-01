@@ -204,7 +204,12 @@ export const AssistantProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [activeToolExecution] = useState<ToolCallExecution | null>(null);
   const [webhookUrl, setWebhookUrlState] = useState<string>(() => {
-    return localStorage.getItem('nexa_webhook_url') || DEFAULT_WEBHOOK_URL;
+    let saved = localStorage.getItem('nexa_webhook_url') || localStorage.getItem('nexora_webhook_url') || DEFAULT_WEBHOOK_URL;
+    if (saved.includes('/webhook-test/')) {
+      saved = saved.replace('/webhook-test/', '/webhook/');
+      localStorage.setItem('nexa_webhook_url', saved);
+    }
+    return saved;
   });
   const [webhookStatus, setWebhookStatus] = useState<'connected' | 'offline' | 'checking'>('checking');
   const [unreadNotifications] = useState<number>(6);
