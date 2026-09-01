@@ -1,8 +1,8 @@
 {
-  "name": "personal-assistant-nexora",
+  "name": "personal-assistant-nexa",
   "version": "1.0.0",
   "private": true,
-  "description": "NEXORA AI Personal Assistant & Automation Command Center",
+  "description": "NEXA AI Personal Assistant & Automation Command Center",
   "scripts": {
     "dev": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build",

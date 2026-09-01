@@ -55,7 +55,7 @@ export const Sidebar: React.FC = () => {
             <Sparkles className="w-4 h-4 text-white fill-white" />
           </div>
           <span className="font-extrabold text-lg tracking-wider text-white font-['Outfit'] group-hover:text-purple-300 transition-colors">
-            NEXORA
+            NEXA
           </span>
         </div>
 
