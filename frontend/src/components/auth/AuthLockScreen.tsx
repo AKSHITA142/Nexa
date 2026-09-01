@@ -70,9 +70,8 @@ export const AuthLockScreen: React.FC<AuthLockScreenProps> = ({ onUnlock }) => {
         {/* Input Form */}
         <form onSubmit={handleUnlock} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-zinc-300 flex items-center justify-between">
+            <label className="text-xs font-medium text-zinc-300 block">
               <span>Passcode / PIN</span>
-              <span className="text-[11px] text-zinc-500">Default: <code className="text-purple-400 bg-purple-950/40 px-1 py-0.5 rounded">nexa142</code></span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
