@@ -17,9 +17,10 @@ import { SettingsView } from './components/views/SettingsView';
 import { UrlModal } from './components/modals/UrlModal';
 import { TemplateModal } from './components/modals/TemplateModal';
 import { SettingsModal } from './components/modals/SettingsModal';
+import { AuthLockScreen } from './components/auth/AuthLockScreen';
 
 const AppContent: React.FC = () => {
-  const { currentView, isWorkspaceActive } = useAssistant();
+  const { currentView, isWorkspaceActive, isLocked, unlockSession } = useAssistant();
   const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -64,17 +65,29 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#07080C] text-[#F3F4F6] font-sans antialiased overflow-x-hidden">
-      {/* Left Navigation Sidebar */}
-      <Sidebar />
+    <div className="relative min-h-screen bg-[#07080C] text-[#F3F4F6] font-sans antialiased overflow-x-hidden">
+      {/* Background Main Application UI (Blurred when locked) */}
+      <div
+        className={`flex min-h-screen transition-all duration-500 ${
+          isLocked
+            ? 'filter blur-[1px] pointer-events-none select-none opacity-90'
+            : 'filter blur-0 opacity-100'
+        }`}
+      >
+        {/* Left Navigation Sidebar */}
+        <Sidebar />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
-        <TopBar />
-        <main className="flex-1 overflow-y-auto">
-          {renderMainContent()}
-        </main>
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+          <TopBar />
+          <main className="flex-1 overflow-y-auto">
+            {renderMainContent()}
+          </main>
+        </div>
       </div>
+
+      {/* Auth Lock Screen Floating Modal */}
+      {isLocked && <AuthLockScreen onUnlock={unlockSession} />}
 
       {/* Modals */}
       <UrlModal

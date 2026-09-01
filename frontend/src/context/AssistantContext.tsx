@@ -31,6 +31,9 @@ interface AssistantContextType {
   ) => Promise<void>;
   startNewChat: () => void;
   selectConversation: (id: string) => void;
+  isLocked: boolean;
+  lockSession: () => void;
+  unlockSession: () => void;
   deployAutomation: (proposal: AutomationProposal) => void;
   dismissAutomation: (proposalId: string) => void;
 }
@@ -187,7 +190,7 @@ export const AssistantProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isWorkspaceActive, setIsWorkspaceActive] = useState<boolean>(false);
   const [activeConversation, setActiveConversation] = useState<ConversationThread | null>(null);
   const [recentConversations, setRecentConversations] = useState<ConversationThread[]>(() => {
-    const saved = localStorage.getItem('nexora_conversations');
+    const saved = localStorage.getItem('nexa_conversations');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -201,10 +204,28 @@ export const AssistantProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [activeToolExecution] = useState<ToolCallExecution | null>(null);
   const [webhookUrl, setWebhookUrlState] = useState<string>(() => {
-    return localStorage.getItem('nexora_webhook_url') || DEFAULT_WEBHOOK_URL;
+    return localStorage.getItem('nexa_webhook_url') || DEFAULT_WEBHOOK_URL;
   });
   const [webhookStatus, setWebhookStatus] = useState<'connected' | 'offline' | 'checking'>('checking');
   const [unreadNotifications] = useState<number>(6);
+
+  // Authentication Lock state
+  const [isLocked, setIsLocked] = useState<boolean>(() => {
+    const isAuth =
+      localStorage.getItem('nexa_is_authenticated') === 'true' ||
+      sessionStorage.getItem('nexa_is_authenticated') === 'true';
+    return !isAuth;
+  });
+
+  const lockSession = useCallback(() => {
+    localStorage.removeItem('nexa_is_authenticated');
+    sessionStorage.removeItem('nexa_is_authenticated');
+    setIsLocked(true);
+  }, []);
+
+  const unlockSession = useCallback(() => {
+    setIsLocked(false);
+  }, []);
 
   // Voice recognition state
   const [isListeningVoice, setIsListeningVoice] = useState<boolean>(false);
@@ -213,7 +234,7 @@ export const AssistantProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Save conversations to localStorage
   useEffect(() => {
-    localStorage.setItem('nexora_conversations', JSON.stringify(recentConversations));
+    localStorage.setItem('nexa_conversations', JSON.stringify(recentConversations));
   }, [recentConversations]);
 
   // Set webhook URL helper
@@ -450,6 +471,9 @@ export const AssistantProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         sendMessage,
         startNewChat,
         selectConversation,
+        isLocked,
+        lockSession,
+        unlockSession,
         deployAutomation,
         dismissAutomation,
       }}

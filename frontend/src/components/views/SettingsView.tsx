@@ -110,6 +110,46 @@ export const SettingsView: React.FC = () => {
           </div>
         </div>
 
+        {/* Security & Access Passcode Card */}
+        <div className="p-6 rounded-2xl bg-[#0E1019]/90 border border-white/[0.06] space-y-4 shadow-xl">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <span className="text-base">🔐</span>
+              <span>Workspace Security & Passcode</span>
+            </h3>
+            <span className="text-xs text-purple-400 font-medium">Active Protection</span>
+          </div>
+
+          <p className="text-xs text-zinc-400">
+            Set your secret passcode to prevent unauthorized access when sharing or accessing NEXA from another device.
+          </p>
+
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-zinc-300">Access Passcode</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="text"
+                defaultValue={localStorage.getItem('nexa_access_code') || 'nexa142'}
+                id="nexa-passcode-input"
+                className="w-full max-w-sm px-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const input = document.getElementById('nexa-passcode-input') as HTMLInputElement;
+                  if (input && input.value.trim()) {
+                    localStorage.setItem('nexa_access_code', input.value.trim());
+                    alert('Passcode updated successfully!');
+                  }
+                }}
+                className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-xs font-bold text-white shadow-md shadow-purple-950/50 transition-all shrink-0"
+              >
+                Update Passcode
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* System Diagnostics */}
         <div className="p-6 rounded-2xl bg-[#0E1019]/90 border border-white/[0.06] space-y-4 shadow-xl">
           <h3 className="text-sm font-bold text-white flex items-center gap-2">

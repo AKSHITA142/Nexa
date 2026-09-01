@@ -9,8 +9,8 @@ import {
   Activity,
   Calendar,
   Settings,
-  ChevronDown,
   ArrowRight,
+  Lock,
 } from 'lucide-react';
 import { useAssistant } from '../../context/AssistantContext';
 import type { NavSection } from '../../types/assistant';
@@ -34,7 +34,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export const Sidebar: React.FC = () => {
-  const { currentView, setCurrentView, startNewChat } = useAssistant();
+  const { currentView, setCurrentView, startNewChat, lockSession } = useAssistant();
 
   const handleNavClick = (viewId: NavSection) => {
     setCurrentView(viewId);
@@ -112,8 +112,8 @@ export const Sidebar: React.FC = () => {
           </button>
         </div>
 
-        {/* User Profile Card */}
-        <div className="flex items-center justify-between px-2 py-1.5 rounded-xl hover:bg-white/[0.04] transition-colors cursor-pointer group">
+        {/* User Profile Card with Lock */}
+        <div className="flex items-center justify-between px-2 py-1.5 rounded-xl hover:bg-white/[0.04] transition-colors group">
           <div className="flex items-center gap-3">
             <div className="relative">
               <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-900 to-indigo-700 border border-purple-400/40 flex items-center justify-center text-xs font-bold text-white shadow-inner">
@@ -130,7 +130,13 @@ export const Sidebar: React.FC = () => {
               </span>
             </div>
           </div>
-          <ChevronDown className="w-4 h-4 text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+          <button
+            onClick={lockSession}
+            title="Lock Session (Require Passcode)"
+            className="p-1.5 rounded-lg text-zinc-500 hover:text-purple-300 hover:bg-purple-900/30 transition-colors"
+          >
+            <Lock className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </aside>
