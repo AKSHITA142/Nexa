@@ -129,7 +129,8 @@ export const SettingsView: React.FC = () => {
             <div className="flex items-center gap-3">
               <input
                 type="text"
-                defaultValue={localStorage.getItem('nexa_access_code') || 'nexa142'}
+                defaultValue={localStorage.getItem('nexa_access_code') || ''}
+                placeholder="Enter new master passcode..."
                 id="nexa-passcode-input"
                 className="w-full max-w-sm px-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50"
               />

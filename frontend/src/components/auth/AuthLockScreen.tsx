@@ -12,14 +12,21 @@ export const AuthLockScreen: React.FC<AuthLockScreenProps> = ({ onUnlock }) => {
   const [isShaking, setIsShaking] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
 
+  // Check if a master passcode has been configured on this device/app
+  const storedPass = localStorage.getItem('nexa_access_code');
+  const isFirstTimeSetup = !storedPass;
+
   const handleUnlock = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
-    // Check configured password or fallback to default 'nexa142'
-    const storedPass = localStorage.getItem('nexa_access_code') || 'nexa142';
+    if (!password.trim()) {
+      setError('Please enter a passcode.');
+      return;
+    }
 
-    if (password === storedPass || password === '1420') {
-      setError('');
+    if (isFirstTimeSetup) {
+      // First-time setup: Save the user's chosen passcode
+      localStorage.setItem('nexa_access_code', password.trim());
       if (rememberMe) {
         localStorage.setItem('nexa_is_authenticated', 'true');
       } else {
@@ -27,9 +34,20 @@ export const AuthLockScreen: React.FC<AuthLockScreenProps> = ({ onUnlock }) => {
       }
       onUnlock();
     } else {
-      setError('Incorrect passcode. Please try again.');
-      setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 500);
+      // Subsequent logins: Validate against stored master passcode
+      if (password.trim() === storedPass) {
+        setError('');
+        if (rememberMe) {
+          localStorage.setItem('nexa_is_authenticated', 'true');
+        } else {
+          sessionStorage.setItem('nexa_is_authenticated', 'true');
+        }
+        onUnlock();
+      } else {
+        setError('Incorrect passcode. Please try again.');
+        setIsShaking(true);
+        setTimeout(() => setIsShaking(false), 500);
+      }
     }
   };
 
@@ -55,14 +73,16 @@ export const AuthLockScreen: React.FC<AuthLockScreenProps> = ({ onUnlock }) => {
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-semibold uppercase tracking-wider mb-2">
               <ShieldCheck className="w-3.5 h-3.5" />
-              Protected Workspace
+              {isFirstTimeSetup ? 'First-Time Setup' : 'Protected Workspace'}
             </div>
             <h1 className="text-2xl font-bold text-white font-['Outfit'] flex items-center justify-center gap-2">
-              NEXA Assistant
+              {isFirstTimeSetup ? 'Create Master Passcode' : 'NEXA Assistant'}
               <Sparkles className="w-4 h-4 text-purple-400 fill-purple-400" />
             </h1>
             <p className="text-xs text-zinc-400 mt-1">
-              Enter your access passcode to authorize this session
+              {isFirstTimeSetup
+                ? 'Set a private passcode to secure your AI assistant'
+                : 'Enter your access passcode to authorize this session'}
             </p>
           </div>
         </div>
@@ -71,7 +91,7 @@ export const AuthLockScreen: React.FC<AuthLockScreenProps> = ({ onUnlock }) => {
         <form onSubmit={handleUnlock} className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-zinc-300 block">
-              <span>Passcode / PIN</span>
+              <span>{isFirstTimeSetup ? 'Choose Passcode / PIN' : 'Passcode / PIN'}</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
@@ -84,7 +104,7 @@ export const AuthLockScreen: React.FC<AuthLockScreenProps> = ({ onUnlock }) => {
                   setPassword(e.target.value);
                   if (error) setError('');
                 }}
-                placeholder="Enter passcode..."
+                placeholder={isFirstTimeSetup ? 'Enter a secure passcode...' : 'Enter passcode...'}
                 autoFocus
                 className="w-full pl-10 pr-11 py-2.5 bg-black/40 border border-white/10 rounded-xl text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-all font-mono"
               />
@@ -120,7 +140,7 @@ export const AuthLockScreen: React.FC<AuthLockScreenProps> = ({ onUnlock }) => {
             type="submit"
             className="w-full py-2.5 px-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-sm font-semibold rounded-xl shadow-lg shadow-purple-600/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
           >
-            <span>Unlock Workspace</span>
+            <span>{isFirstTimeSetup ? 'Set Passcode & Unlock' : 'Unlock Workspace'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
