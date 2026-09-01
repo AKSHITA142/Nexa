@@ -83,6 +83,7 @@ Calendar Tools
 
 Rules:
 - Always confirm or infer date, time, and title before creating events.
+- When creating a calendar event, you MUST ALWAYS provide `Summary` as the meeting/event title (e.g. "Meeting with Priya") so it appears directly on the Google Calendar grid as the title instead of "(No title)".
 - Always include the `+05:30` timezone offset in Start and End strings.
 - Ask only for missing required fields.
 
